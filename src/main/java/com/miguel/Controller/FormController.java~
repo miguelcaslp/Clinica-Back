@@ -1,0 +1,93 @@
+package com.alejandroLopez.Controller;
+
+import com.alejandroLopez.model.Form;
+import com.alejandroLopez.service.FormService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/forms") // La ruta base para acceder a los formularios
+public class FormController {
+
+    private final FormService formService;
+
+    @Autowired
+    public FormController(FormService formService) {
+        this.formService = formService;
+    }
+
+    // Crear un nuevo formulario (POST)
+    @PostMapping
+    public ResponseEntity<Form> createForm(@RequestParam("formData") Form formData,
+                                           @RequestParam("files") List<MultipartFile> files) throws IOException {
+        // Guardar los datos del formulario
+        Form savedForm = formService.saveForm(formData);
+
+        // Guardar los archivos si existen
+        if (!files.isEmpty()) {
+            for (MultipartFile file : files) {
+                // Lógica para guardar los archivos
+                // Por ejemplo, guardar en disco o base de datos
+                formService.saveFile(file);
+            }
+        }
+
+        return ResponseEntity.ok(savedForm);
+    }
+
+    // Obtener todos los formularios (GET)
+    @GetMapping
+    public ResponseEntity<List<Form>> getAllForms() {
+        List<Form> forms = formService.getAllForms();
+        return new ResponseEntity<>(forms, HttpStatus.OK);
+    }
+
+    // Obtener un formulario por ID (GET)
+    @GetMapping("/{id}")
+    public ResponseEntity<Form> getFormById(@PathVariable Long id) {
+        Optional<Form> form = formService.getFormById(id);
+        return form.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    // Actualizar un formulario existente (PUT)
+    @PutMapping("/{id}")
+    public ResponseEntity<Form> updateForm(@PathVariable Long id, @RequestBody Form formDetails) {
+        Optional<Form> existingForm = formService.getFormById(id);
+
+        if (existingForm.isPresent()) {
+            Form formToUpdate = existingForm.get();
+            formToUpdate.setDescription(formDetails.getDescription());
+            formToUpdate.setDate(formDetails.getDate());
+            formToUpdate.setInitialDiagnosis(formDetails.getInitialDiagnosis());
+            formToUpdate.setInspectionResults(formDetails.getInspectionResults());
+            formToUpdate.setWorkPerformed(formDetails.getWorkPerformed());
+            formToUpdate.setEmployee(formDetails.getEmployee());
+            formToUpdate.setCar(formDetails.getCar());
+
+            Form updatedForm = formService.saveForm(formToUpdate);
+            return new ResponseEntity<>(updatedForm, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // Eliminar un formulario (DELETE)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteForm(@PathVariable Long id) {
+        Optional<Form> existingForm = formService.getFormById(id);
+        if (existingForm.isPresent()) {
+            formService.deleteFormById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+}

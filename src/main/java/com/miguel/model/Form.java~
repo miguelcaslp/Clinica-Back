@@ -1,0 +1,126 @@
+package com.alejandroLopez.model;
+
+import jakarta.persistence.*;
+
+import java.util.Date;
+import java.util.List;
+
+@Entity
+public class Form {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long formId;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    private Date date;
+
+    @Column(columnDefinition = "TEXT")
+    private String initialDiagnosis;
+
+    @Column(columnDefinition = "TEXT")
+    private String inspectionResults;
+
+    @Column(columnDefinition = "TEXT")
+    private String workPerformed;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
+
+    @ManyToOne
+    @JoinColumn(name = "car_license_plate", nullable = false)
+    private Car car;
+
+    @OneToMany(mappedBy = "form", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Photo> photos;
+
+    // Default constructor
+    public Form() {}
+
+    // Constructor with parameters
+    public Form(String description, Date date, String initialDiagnosis, String inspectionResults, String workPerformed, Employee employee, Car car) {
+        this.description = description;
+        this.date = date;
+        this.initialDiagnosis = initialDiagnosis;
+        this.inspectionResults = inspectionResults;
+        this.workPerformed = workPerformed;
+        this.employee = employee;
+        this.car = car;
+    }
+
+    // Getters and Setters
+    public Long getFormId() {
+        return formId;
+    }
+
+    public void setFormId(Long formId) {
+        this.formId = formId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getInitialDiagnosis() {
+        return initialDiagnosis;
+    }
+
+    public void setInitialDiagnosis(String initialDiagnosis) {
+        this.initialDiagnosis = initialDiagnosis;
+    }
+
+    public String getInspectionResults() {
+        return inspectionResults;
+    }
+
+    public void setInspectionResults(String inspectionResults) {
+        this.inspectionResults = inspectionResults;
+    }
+
+    public String getWorkPerformed() {
+        return workPerformed;
+    }
+
+    public void setWorkPerformed(String workPerformed) {
+        this.workPerformed = workPerformed;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
+}

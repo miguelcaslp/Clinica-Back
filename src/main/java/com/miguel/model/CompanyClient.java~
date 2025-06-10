@@ -1,0 +1,42 @@
+package com.alejandroLopez.model;
+
+import jakarta.persistence.*;
+
+@Entity
+@IdClass(CompanyClientId.class)
+public class CompanyClient {
+
+    @Id
+    @Column(name = "client_id")
+    private Long clientId;
+
+    @Id
+    @Column(name = "company_id")
+    private Long companyId;
+
+    // Default constructor
+    public CompanyClient() {}
+
+    // Constructor with parameters
+    public CompanyClient(Long clientId, Long companyId) {
+        this.clientId = clientId;
+        this.companyId = companyId;
+    }
+
+    // Getters and Setters
+    public Long getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+}
