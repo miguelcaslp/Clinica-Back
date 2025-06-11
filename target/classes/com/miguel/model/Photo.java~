@@ -1,0 +1,52 @@
+package com.alejandroLopez.model;
+
+import jakarta.persistence.*;
+
+@Entity
+public class Photo {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long photoId;
+
+    @Column(nullable = false)
+    private byte[] url;
+
+    @ManyToOne
+    @JoinColumn(name = "form_id", nullable = false)
+    private Form form;
+
+    // Default constructor
+    public Photo() {}
+
+    // Constructor with parameters
+    public Photo(byte[] url, Form form) {
+        this.url = url;
+        this.form = form;
+    }
+
+    // Getters and Setters
+    public Long getPhotoId() {
+        return photoId;
+    }
+
+    public void setPhotoId(Long photoId) {
+        this.photoId = photoId;
+    }
+
+    public byte[] getUrl() {
+        return url;
+    }
+
+    public void setUrl(byte[] url) {
+        this.url = url;
+    }
+
+    public Form getForm() {
+        return form;
+    }
+
+    public void setForm(Form form) {
+        this.form = form;
+    }
+}

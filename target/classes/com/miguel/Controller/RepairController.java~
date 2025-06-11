@@ -1,0 +1,79 @@
+package com.alejandroLopez.Controller;
+
+import com.alejandroLopez.model.Repair;
+import com.alejandroLopez.model.Car;
+import com.alejandroLopez.model.Employee;
+import com.alejandroLopez.service.RepairService;
+import com.alejandroLopez.service.CarService;
+import com.alejandroLopez.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/repairs")
+public class RepairController {
+
+    @Autowired
+    private RepairService repairService;
+
+    @Autowired
+    private CarService carService;
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    // Crear un nuevo repair
+    @PostMapping
+    public ResponseEntity<Repair> createRepair(@RequestBody Repair repair) {
+        // Imprimir los datos de la reparación recibida
+        System.out.println("Datos de la reparación recibidos: " + repair);
+
+        // Validar que la matrícula del coche no sea nula
+        if (repair.getCar() == null || repair.getCar().getLicensePlate() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Devuelve 400 si la matrícula es nula
+        }
+
+        // Obtener el coche usando el servicio
+        Optional<Car> carOptional = carService.getCarByLicensePlate(repair.getCar().getLicensePlate());
+        if (!carOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Devuelve 404 si no se encuentra el coche
+        }
+        Car car = carOptional.get(); // Extraer el coche
+
+        // Validar que el empleado no sea nulo
+        if (repair.getEmployee() == null || repair.getEmployee().getId() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Devuelve 400 si el empleado es nulo
+        }
+
+        // Obtener el empleado usando el servicio
+        Optional<Employee> employeeOptional = employeeService.getEmployeeById(repair.getEmployee().getId());
+        if (!employeeOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Devuelve 404 si no se encuentra el empleado
+        }
+        Employee employee = employeeOptional.get(); // Extraer el empleado
+
+        // Asignar el coche y el empleado a la reparación
+        repair.setCar(car); // Asigna el coche a la reparación
+        repair.setEmployee(employee); // Asigna el empleado a la reparación
+
+        // Establecer la fecha de inicio (puedes pasarla en el cuerpo de la solicitud)
+        if (repair.getStartDate() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Devuelve 400 si la fecha de inicio es nula
+        }
+
+        // Aquí es donde se puede crear una nueva reparación sin preocuparse por duplicados
+        try {
+            Repair newRepair = repairService.createRepair(repair);
+            return new ResponseEntity<>(newRepair, HttpStatus.CREATED);
+        } catch (Exception e) {
+            // Manejo de excepciones si la inserción falla por otro motivo
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Devuelve 500 en caso de error interno
+        }
+    }
+
+    // Otros métodos del controlador...
+}

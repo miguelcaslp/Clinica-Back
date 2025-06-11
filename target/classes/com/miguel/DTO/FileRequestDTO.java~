@@ -1,0 +1,26 @@
+
+import com.alejandroLopez.model.File;
+
+import java.util.List;
+
+public class FileRequestDTO {
+    private File file; // Archivo
+    private List<Long> employeeIds; // IDs de empleados relacionados
+
+    // Getters y Setters
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public List<Long> getEmployeeIds() {
+        return employeeIds;
+    }
+
+    public void setEmployeeIds(List<Long> employeeIds) {
+        this.employeeIds = employeeIds;
+    }
+}

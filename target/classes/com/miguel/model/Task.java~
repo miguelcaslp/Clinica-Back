@@ -1,0 +1,22 @@
+package com.alejandroLopez.model;
+
+import jakarta.persistence.*;
+
+@Entity
+public class Task {
+    @EmbeddedId
+    private TaskId id;
+
+    @ManyToOne
+    @MapsId("fileId")
+    @JoinColumn(name = "file_id")
+    private File file;
+
+    @ManyToOne
+    @MapsId("employeeId")
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+    // Getters and Setters
+}
+

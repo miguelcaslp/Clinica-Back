@@ -1,0 +1,11 @@
+package com.alejandroLopez.model;
+
+import jakarta.persistence.Embeddable;
+
+@Embeddable
+class TaskId implements java.io.Serializable {
+    private int fileId;
+    private int employeeId;
+
+    // Getters and Setters, hashCode, equals
+}

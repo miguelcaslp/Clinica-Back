@@ -1,0 +1,43 @@
+package com.alejandroLopez.model;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+public class CompanyClientId implements Serializable {
+    private Long clientId;
+    private Long companyId;
+
+    // Default constructor
+    public CompanyClientId() {}
+
+    // Getters, Setters, equals, and hashCode methods
+    public Long getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CompanyClientId)) return false;
+        CompanyClientId that = (CompanyClientId) o;
+        return Objects.equals(clientId, that.clientId) &&
+                Objects.equals(companyId, that.companyId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clientId, companyId);
+    }
+}
