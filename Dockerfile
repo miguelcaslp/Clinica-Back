@@ -7,17 +7,18 @@
 #EXPOSE 8080
 #CMD ["java","-jar","/app/tutorialhub.jar"]
 
-
-# Etapa 1: Compilación
+#
+# Build stage
+#
 FROM maven:3.8.5-openjdk-17 AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package
 
-# Etapa 2: Imagen final de ejecución
+#
+# Package stage
+#
 FROM openjdk:17-jdk-slim
-WORKDIR /app
-COPY --from=build /app/target/tutorialhub-0.0.1-SNAPSHOT.jar tutorialhub.jar
+COPY --from=build /home/app/target/getyourway-0.0.1-SNAPSHOT.jar /usr/local/lib/demo.jar
 EXPOSE 8080
-CMD ["java", "-jar", "tutorialhub.jar"]
+ENTRYPOINT ["java","-jar","/usr/local/lib/demo.jar"]
